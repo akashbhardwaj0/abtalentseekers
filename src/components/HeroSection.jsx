@@ -14,7 +14,7 @@ function HeroSection() {
           Search, Apply <br /> Get Your{" "}
           <span className="text-blueColor">Dream Job</span>
         </h1>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+        <p>Your Pathway to Professional Success</p>
         <div className="flex rounded-full w-[40%] shadow-lg border border-grayColor-200 pl-3 rounder-full item-center gap-4 mx-auto">
         <Input type = "text" placeholder = "Find your Dream Job" className="rounded-full outline-none border-none w-full"/>
         <Button className = "rounded-r-full bg-blueColor"><Search className="bg-gray"/></Button>

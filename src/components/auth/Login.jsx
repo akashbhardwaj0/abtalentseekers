@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
@@ -7,11 +7,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { USER_API_END_POINT } from "../utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "@/redux/authSlice";
+import { setLoading, setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
+import axios from "axios";
 
 const Login = () => {
-  const { loading } = useSelector((state) => state.auth);
+  const { loading, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [inputData, setInputData] = useState({
@@ -26,36 +27,72 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const apiUrl = `${USER_API_END_POINT}/login`;
-
     try {
-      dispatch(setLoading(true));
-      await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          Accept: "application.json",
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify(inputData),
-      }).then(async (response) => {
-        if (response.ok) {
-          const errorResponse = await response.json();
-          toast.success(errorResponse.message || "Login Successfull");
-          localStorage.setItem("auth-token", response.token);
-          navigate("/");
-        } else {
-          const errorResponse = await response.json();
-          toast.error(errorResponse.message || "An error occurred");
+        dispatch(setLoading(true));
+        const res = await axios.post(`${USER_API_END_POINT}/login`, inputData, {
+            headers: {
+                "Content-Type": "application/json"
+            },
+            withCredentials: true,
+        });
+        if (res.data.success) {
+            dispatch(setUser(res.data.user));
+            navigate("/");
+            toast.success(res.data.message);
         }
-      });
     } catch (error) {
-      console.log(error);
+        console.log(error);
+        toast.error(error.response.data.message);
     } finally {
-      dispatch(setLoading(false));
+        dispatch(setLoading(false));
     }
-  };
+}
+useEffect(()=>{
+    if(user){
+        navigate("/");
+    }
+},[])
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  
+  //   const userApiUrl = `${USER_API_END_POINT}/login`;
+  
+  //   try {
+  //     dispatch(setLoading(true));
+  //     const response = await fetch(userApiUrl, {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(inputData),
+  //       credentials: 'include', // Include credentials (cookies)
+  //     });
+  
+  //     if (response.ok) {
+  //       const responseData = await response.json();
+  //       toast.success(responseData.message || "Login Successful");
+  //       dispatch(setUser(responseData));
+  //       navigate("/");
+  //     } else {
+  //       const responseData = await response.json();
+  //       toast.error(responseData.message || "An error occurred");
+  //     }
+  
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     dispatch(setLoading(false));
+  //   }
+  // };
+  
+
+  // useEffect(()=>{
+  //   if(user){
+  //     navigate("/")
+  //   }
+  // },[])
 
   return (
     <div className="flex items-center justify-center max-w-7xl mx-auto">

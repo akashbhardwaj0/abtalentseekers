@@ -4,12 +4,11 @@ import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { USER_API_END_POINT } from "../utils/constant";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
+import { USER_API_END_POINT } from "../utils/constant";
 
 function Signup() {
   const navigate = useNavigate();
@@ -30,48 +29,49 @@ function Signup() {
   };
 
   const handleFileChange = (e) => {
-    setInputData({ ...inputData, file: e.target.files[0] }); // Corrected line
+    setInputData({ ...inputData, file: e.target.files?.[0] }); // Corrected line
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("form sign up data 1 ", inputData);
+    console.log("Form sign up data: ", inputData);
+    
     const formData = new FormData();
-
     formData.append("fullname", inputData.fullname);
     formData.append("email", inputData.email);
     formData.append("phoneNumber", inputData.phoneNumber);
     formData.append("password", inputData.password);
     formData.append("role", inputData.role);
+    
+    // Check if a file is provided and append it to the FormData
     if (inputData.file) {
       formData.append("file", inputData.file);
     }
+  
     try {
       dispatch(setLoading(true));
-      const apiUrl = "http://localhost:8000/api/v1/user/register";
-      await fetch(apiUrl, {
+      const userApiUrl = `${USER_API_END_POINT}/register`;
+      const response = await fetch(userApiUrl, {
         method: "POST",
-        headers: {
-          Accept: "multipart/form-data",
-        },
-        body: formData,
-      }).then(async (response) => {
-        if (response.ok) {
-          toast.success("Registration successful!");
-          localStorage.setItem("auth-token", response.token);
-          navigate("/login");
-        } else {
-          const errorData = await response.json();
-          toast.error(errorData.message || "Registration failed.");
-        }
+        body: formData, // FormData already includes the correct Content-Type
+        credentials: "include", // Include cookies and credentials
       });
+  
+      if (response.ok) {
+        const responseData = await response.json();
+        toast.success(responseData.message || "Registration successful!");
+        navigate("/login");
+      } else {
+        const responseData = await response.json();
+        toast.error(responseData.message || "Registration failed.");
+      }
     } catch (error) {
       console.error("Error:", error);
       toast.error("An error occurred. Please try again.");
     } finally {
-      dispatch(setLoading(true));
+      dispatch(setLoading(false));
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center max-w-7xl mx-auto">

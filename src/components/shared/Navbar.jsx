@@ -1,16 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { LogOut, User2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { USER_API_END_POINT } from "../utils/constant";
+import { toast } from "sonner";
+import { setUser } from "@/redux/authSlice";
 
 function Navbar() {
-  const [user, setUser] = useState(false);
-  useEffect(()=>{
+  const user = useSelector((state) => state.auth?.user || null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  const handleLogout = async () => {
+    try {
+      const apiUrl = `${USER_API_END_POINT}/logout`;
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        credentials: "include",
+      });
+      const responseData = await response.json();
+      if (response.ok) {
+        toast.success(responseData.message);
+        dispatch(setUser(null));
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.responseData.message);
+    }
+  };
 
-  }, [localStorage.getItem("auth-token")])
   return (
     <div className="bg-white">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
@@ -19,17 +41,20 @@ function Navbar() {
         </h1>
         <div className="flex items-center gap-12">
           <ul className="flex font-medium items-center gap-5">
-            <li>
-              <Link to="/">Home</Link>{" "}
-            </li>
-            <li>
-              <Link to="/jobs">Jobs</Link>{" "}
-            </li>
-            <li>
-              <Link to="/browse">Browse</Link>
-            </li>
+            {user?.role === "recruiter" ? (
+              <>
+                <li><Link to="/admin/companies">Companies</Link>{" "}</li>
+                <li><Link to="/admin/jobs">Jobs</Link>{" "}</li>
+              </>
+            ) : (
+              <>
+                <li><Link to="/">Home</Link>{" "}</li>
+                <li><Link to="/jobs">Jobs</Link>{" "}</li>
+                <li><Link to="/browse">Browse</Link></li>
+              </>
+            )}
           </ul>
-          {!localStorage.getItem('auth-token') ? (
+          {user === null ? (
             <div className="flex item-center gap-2">
               <Link to="/login">
                 <Button variant="outline">Login</Button>
@@ -41,17 +66,21 @@ function Navbar() {
           ) : (
             <Popover>
               <PopoverTrigger asChild>
-                <Avatar className="cursor-pointer">
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                <Avatar className=" cursor-pointer">
+                  {user.profile.profilePhoto ? (
+                    <AvatarImage src={user?.profile?.profilePhoto} />
+                  ) : (
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                  )}
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-80">
                 <div className="flex gap-4 space-y-2">
                   <Avatar className="cursor-pointer">
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={user?.profile?.profilePhoto} />
                   </Avatar>
                   <div>
-                    <h3 className="font-medium">Akash Bhardwaj</h3>
+                    <h3 className="font-medium">{user.fullname}</h3>
                     <p className="font-sm text-muted-foreground">
                       Lorem ipsum dolor sit amet.
                     </p>
@@ -60,12 +89,16 @@ function Navbar() {
                 <div className={`flex flex-col text-greyColor-600`}>
                   <div className="flex w-fit my-2 items-center gap-2 cursor-pointer">
                     <User2 />
-                    <Button variant="link">View Profile</Button>
+                    <Button variant="link">
+                      <Link to="/profile">View Profile</Link>
+                    </Button>
                   </div>
 
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <LogOut />
-                    <Button variant="link" onClick = {()=>localStorage.removeItem('auth-token')}>Logout</Button>
+                    <Button variant="link" onClick={handleLogout}>
+                      Logout
+                    </Button>
                   </div>
                 </div>
               </PopoverContent>
