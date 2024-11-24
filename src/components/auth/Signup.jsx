@@ -32,9 +32,7 @@ function Signup() {
     setInputData({ ...inputData, file: e.target.files?.[0] }); // Corrected line
   };
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Form sign up data: ", inputData);
-    
+    e.preventDefault();    
     const formData = new FormData();
     formData.append("fullname", inputData.fullname);
     formData.append("email", inputData.email);

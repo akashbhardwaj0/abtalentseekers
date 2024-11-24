@@ -16,6 +16,7 @@ function useGetSingleJob(id) {
     if(response.ok){
         const responseData = await response.json();
         dispatch(setSingleJob(responseData.job))
+       
 
   
     }
