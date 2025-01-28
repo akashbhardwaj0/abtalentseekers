@@ -6,6 +6,9 @@
 export const USER_API_END_POINT = "http://localhost:8000/api/v1/user"
 
 
+export const APPLIED_JOB_END_POINT = "http://localhost:8000/api/v1/application/get"
+
+
 // /get
 // /post
 // /getadminjobs
@@ -18,8 +21,14 @@ export const JOB_API_END_POINT = "http://localhost:8000/api/v1/job"
 // /update/:id
 export const COMPANY_API_END_POINT = "http://localhost:8000/api/v1/company"
 
+// /post
+// /getadminjobs
+
+export const ADMIN_JOB_END_POINT = "http://localhost:8000/api/v1/job"
+
 // /apply/:id
 // /get
 // /:id/applicants
 // /status/:id/update
-export const APPLICATION_API_END_POINT = "http://localhost:8000/api/v1/application/"
+export const ADMIN_APPLICATION_API_END_POINT = "http://localhost:8000/api/v1/application"
+

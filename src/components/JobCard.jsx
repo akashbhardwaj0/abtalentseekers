@@ -31,7 +31,7 @@ function JobCard(props) {
       <div className="flex items-center gap-2 my-2">
         <Avatar>
           <AvatarImage 
-            src="https://th.bing.com/th/id/OIP.afQdiNPi7rhMZnP6xqoyLwAAAA?rs=1&pid=ImgDetMain" 
+            src={job?.company?.logo}
             alt="Company Logo"
           />
         </Avatar>

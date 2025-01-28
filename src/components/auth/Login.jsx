@@ -53,48 +53,9 @@ useEffect(()=>{
     }
 },[])
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  
-  //   const userApiUrl = `${USER_API_END_POINT}/login`;
-  
-  //   try {
-  //     dispatch(setLoading(true));
-  //     const response = await fetch(userApiUrl, {
-  //       method: "POST",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(inputData),
-  //       credentials: 'include', // Include credentials (cookies)
-  //     });
-  
-  //     if (response.ok) {
-  //       const responseData = await response.json();
-  //       toast.success(responseData.message || "Login Successful");
-  //       dispatch(setUser(responseData));
-  //       navigate("/");
-  //     } else {
-  //       const responseData = await response.json();
-  //       toast.error(responseData.message || "An error occurred");
-  //     }
-  
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     dispatch(setLoading(false));
-  //   }
-  // };
   
 
-  // useEffect(()=>{
-  //   if(user){
-  //     navigate("/")
-  //   }
-  // },[])
-
-  return (
+ return (
     <div className="flex items-center justify-center max-w-7xl mx-auto">
       <form
         className="w-full sm:w-1/2 border border-gray-200 rounded-md p-4 my-5 bg-white shadow-md"

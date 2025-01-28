@@ -1,15 +1,14 @@
 import React, { useEffect } from "react";
-import { JOB_API_END_POINT } from "../utils/constant";
-import { useDispatch, useSelector } from "react-redux";
-import { setAllJob } from "@/redux/jobSlice";
+import { ADMIN_JOB_END_POINT } from "../utils/constant";
+import { useDispatch } from "react-redux";
+import { setAllAdminJobs, setAllJob } from "@/redux/jobSlice";
 
-function useGetAllJobs() {
+function useGetAllAdminJob() {
   const dispatch = useDispatch();
-  const {searchQuery} = useSelector((state)=>state.jobs)
   useEffect(() => {
     const fetchAllJobs = async () => {
       try {
-        const apiUrl = `${JOB_API_END_POINT}/get?keyword=${searchQuery}`;
+        const apiUrl = `${ADMIN_JOB_END_POINT}/getadminjobs`;
         const response = await fetch(apiUrl, {
           method: "GET",
           credentials: "include",
@@ -17,7 +16,7 @@ function useGetAllJobs() {
         if (response.ok) {
           const responseData = await response.json();
 
-          dispatch(setAllJob(responseData.jobs));
+          dispatch(setAllAdminJobs(responseData.jobs));
         }
       } catch (error) {
         console.log(error);
@@ -28,4 +27,4 @@ function useGetAllJobs() {
   }, []);
 }
 
-export default useGetAllJobs;
+export default useGetAllAdminJob;

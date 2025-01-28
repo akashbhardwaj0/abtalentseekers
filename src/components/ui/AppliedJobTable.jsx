@@ -1,29 +1,33 @@
 import React from 'react'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from './table'
-const randomJob = [1,2,3.4,5]
+import { useSelector } from 'react-redux'
+import { Badge } from './badge'
 
 function AppliedJobTable() {
+
+  const {allAppliedJobs} = useSelector((state)=>state.jobs)
   return (
     <div>
       <Table>
-  <TableCaption>A list of your recent invoices.</TableCaption>
+  <TableCaption>A list of your recent applied jobs.</TableCaption>
   <TableHeader>
     <TableRow>
-      <TableHead className="w-[100px]">Invoice</TableHead>
-      <TableHead>Status</TableHead>
-      <TableHead>Method</TableHead>
-      <TableHead className="text-right">Amount</TableHead>
+      <TableHead className="w-[100px]">Date</TableHead>
+      <TableHead>Job Role</TableHead>
+      <TableHead>Company</TableHead>
+      <TableHead className="text-right">Status</TableHead>
     </TableRow>
   </TableHeader>
   <TableBody>
       {
-       randomJob.map((item, index)=>
-        <TableRow key = {index}>
-       <TableCell className="font-medium">INV001</TableCell>
-       <TableCell>Paid</TableCell>
-       <TableCell>Credit Card</TableCell>
-       <TableCell className="text-right">$250.00</TableCell>
+       allAppliedJobs?.application?.map((item)=>
+        <TableRow key = {item?._id}>
+       <TableCell className="font-medium">{item?.createdAt.split("T")[0]}</TableCell>
+       <TableCell>{item?.job?.title}</TableCell>
+       <TableCell>{item?.job?.company?.name}</TableCell>
+       <TableCell className="text-right"><Badge className={`${item?.status === "rejected" ? 'bg-red-400' : item.status === 'pending' ? 'bg-gray-400' : 'bg-green-400'}`}>{item.status.toUpperCase()}</Badge></TableCell>
      </TableRow>
+
       
       ) 
         

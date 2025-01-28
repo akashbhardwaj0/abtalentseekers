@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 function LatestJobs() {
   const { allJobs } = useSelector((state) => state.jobs);
 
+
   return (
     <div className="max-w-7xl mx-auto my-20">
       <h1 className="text-4xl font-bold ">

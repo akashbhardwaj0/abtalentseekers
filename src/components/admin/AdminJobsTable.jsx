@@ -13,35 +13,32 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Edit2, MoreHorizontal } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import useGetCompanyById from "../hooks/useGetCompanyById";
 
 
-function CompaniesTable() {
 
-  
+function AdminJobsTable() {  
   const navigate = useNavigate();
-  const {allCompany, searchCompanyByText} = useSelector((state)=>state.company);
-  const companies = allCompany?.companies; 
-  const[filteredCompany, setFilteredCompany] = useState(companies)
+  const{allAdminJobs, searchJobByText} = useSelector((state)=>state.jobs)
+  const[filteredJob, setFilteredJob] = useState(allAdminJobs)
 
   useEffect(() => {
-    setFilteredCompany(
-      companies.filter((item) =>
-        item.name.toLowerCase().includes(searchCompanyByText.toLowerCase())
+    setFilteredJob(
+      allAdminJobs.filter((item) =>
+        item.title.toLowerCase().includes(searchJobByText.toLowerCase())
       )
     );
-  }, [searchCompanyByText, companies]);
+  }, [searchJobByText, allAdminJobs]);
 
   return (
  
-    <div> 
+    <div>
       <Table>
-        <TableCaption>A list of your resent registered companies</TableCaption>
+        <TableCaption>A list of your resent posted jobs</TableCaption>
         <TableHeader>
 
           <TableRow>
-            <TableHead>Logo</TableHead>
-            <TableHead>Name</TableHead>
+            <TableHead>Company Name</TableHead>
+            <TableHead>Role</TableHead>
             <TableHead>Date</TableHead>
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
@@ -49,16 +46,12 @@ function CompaniesTable() {
 
         <TableBody>
           {
-            filteredCompany.length<0?<span>No Company Available</span>:
-            filteredCompany?.map((item)=>(
+            filteredJob.length<0?<span>No Job Available</span>:
+            filteredJob?.map((item)=>(
       
               <TableRow key = {item._id}>
-            <TableCell>
-              <Avatar>
-                <AvatarImage src={item.logo} />
-              </Avatar>
-            </TableCell>
-            <TableCell>{item.name}</TableCell>
+            <TableCell>{item.company?.name}</TableCell>
+            <TableCell>{item.title}</TableCell>
             <TableCell>{item.createdAt.split("T")[0]}</TableCell>
             <TableCell className="text-right cursor-pointer">
               <Popover>
@@ -69,6 +62,10 @@ function CompaniesTable() {
                   <div onClick={ ()=> navigate(`/admin/companies/${item._id}`)} className="flex item-center gap-2 w-fit cursor-pointer">
                     <Edit2 className="w-4" />
                     <span>Edit</span>
+                  </div>
+                  <div onClick={ ()=> navigate(`/admin/jobs/${item._id}/applicants`)} className="flex item-center gap-2 w-fit cursor-pointer">
+                    <Edit2 className="w-4" />
+                    <span>Applicants</span>
                   </div>
                 </PopoverContent>
               </Popover>
@@ -83,4 +80,4 @@ function CompaniesTable() {
   );
 }
 
-export default CompaniesTable;
+export default AdminJobsTable;

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
-import { useSelector } from "react-redux";
-// import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
+import { useSelector } from "react-redux"; 
 import { Button } from "../ui/button";
 import UpdateProfileDialog from "../UpdateProfileDialog";
 import AppliedJobTable from "../ui/AppliedJobTable";
+import useGetAppliedJobs from "../hooks/useGetAppliedJobs";
 
 const isResume = true;
 
@@ -15,6 +15,11 @@ const isResume = true;
 const Profile = () => {
   const [open, setOpen] = useState(false);
   const {user} = useSelector((state) => state.auth);
+
+  useGetAppliedJobs();
+
+
+  
 
   return (
     <div>
@@ -54,7 +59,6 @@ const Profile = () => {
           <h1>Skills</h1>
           <div className="flex items-center gap-1">
             {user?.profile?.skills?.map((item, index) => (
-            // {user.skills?.map((item, index) => (
               <Badge key={index}>{item}</Badge>
             )) || <span>NA</span>}
           </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
@@ -12,7 +12,7 @@ import { USER_API_END_POINT } from "../utils/constant";
 
 function Signup() {
   const navigate = useNavigate();
-  const { loading } = useSelector((state) => state.auth);
+  const { loading, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [inputData, setInputData] = useState({
     fullname: "",
@@ -50,8 +50,8 @@ function Signup() {
       const userApiUrl = `${USER_API_END_POINT}/register`;
       const response = await fetch(userApiUrl, {
         method: "POST",
-        body: formData, // FormData already includes the correct Content-Type
-        credentials: "include", // Include cookies and credentials
+        body: formData, 
+        credentials: "include", 
       });
   
       if (response.ok) {
@@ -69,6 +69,13 @@ function Signup() {
       dispatch(setLoading(false));
     }
   };
+
+  useEffect(()=>{
+      if(user){
+          navigate("/");
+      }
+  },[])
+  
   
 
   return (
